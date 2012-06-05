@@ -2,7 +2,9 @@ from zope.interface.interfaces import ComponentLookupError
 from .implicit import implicit
 from .interfaces import NoImplicitLookupError
 
+
 SENTINEL = object()
+
 
 def do_lookup(iface, lookup_func, component_name, *args, **kw):
     sources = args
@@ -13,7 +15,7 @@ def do_lookup(iface, lookup_func, component_name, *args, **kw):
         raise TypeError("Illegal extra keyword arguments: %s" %
                         ', '.join(kw.keys()))
     component = lookup_func(sources, target, name)
-    
+
     if component is not None:
         return component
     if default is not SENTINEL:
@@ -21,6 +23,7 @@ def do_lookup(iface, lookup_func, component_name, *args, **kw):
     raise ComponentLookupError(
         "Could not find %s from sources %s to target %s." %
         (component_name, sources, target))
+
 
 def find_lookup(kw):
     lookup = kw.pop('lookup', None)
@@ -32,10 +35,12 @@ def find_lookup(kw):
         lookup = implicit.lookup
     return lookup
 
-# iface will serve as 'self' when monkey-patched onto InterfaceClass
+
 def component_lookup(iface, *args, **kw):
+    # iface will serve as 'self' when monkey-patched onto InterfaceClass
     return do_lookup(
         iface, find_lookup(kw).lookup, 'component', *args, **kw)
+
 
 def adapter_lookup(iface, *args, **kw):
     # a shortcut rule to make sure self-adaption works even without
@@ -44,4 +49,3 @@ def adapter_lookup(iface, *args, **kw):
         return args[0]
     return do_lookup(
         iface, find_lookup(kw).adapt, 'adapter', *args, **kw)
-

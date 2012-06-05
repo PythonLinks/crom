@@ -5,8 +5,10 @@ from ._compat import CLASS_TYPES
 from .interfaces import IRegistry, ILookup
 from .directives import implements
 
+
 @implements(IRegistry, ILookup)
 class Registry(object):
+
     def __init__(self):
         self.registry = AdapterRegistry()
 
