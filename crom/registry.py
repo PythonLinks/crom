@@ -1,30 +1,48 @@
+# -*- coding: utf-8 -*-
+
 from zope.interface import providedBy, implementedBy
 from zope.interface.interfaces import ISpecification
 from zope.interface.adapter import AdapterRegistry
+
 from ._compat import CLASS_TYPES
 from .interfaces import IRegistry, ILookup
 from .directives import implements
 
+
+def interfaces(requirements):
+    ifaces = []
+    for requirement in requirements:
+        if ISpecification.providedBy(requirement):
+            ifaces.append(requirement)
+            continue
+        if isinstance(requirement, CLASS_TYPES):
+            ifaces.append(implementedBy(requirement))
+        else:
+            raise TypeError("Sources must either be "
+                            "an interface or a class.")
+    return ifaces
+
+
 @implements(IRegistry, ILookup)
 class Registry(object):
+    """A base component registry.
+    """
     def __init__(self):
         self.registry = AdapterRegistry()
 
     def register(self, sources, target, name, component):
-        iface_sources = []
-        for source in sources:
-            if ISpecification.providedBy(source):
-                iface_sources.append(source)
-                continue
-            if isinstance(source, CLASS_TYPES):
-                iface_sources.append(implementedBy(source))
-            else:
-                raise TypeError("Sources must either be "
-                                "an interface or a class.")
-        self.registry.register(iface_sources, target, name, component)
+        required = interfaces(sources)
+        self.registry.register(required, target, name, component)
+
+    def subscribe(self, sources, target, component):
+        required = interfaces(sources)
+        self.registry.subscribe(required, target, component)
 
     def lookup(self, obs, target, name):
         return self.registry.lookup(map(providedBy, obs), target, name)
+
+    def subscriptions(self, obs, target):
+        return self.registry.subscriptions(map(providedBy, obs), target)
 
     def adapt(self, obs, target, name):
         # self-adaptation

@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from zope.interface import Interface
 from zope.interface.interfaces import ComponentLookupError
 
 from .registry import Registry
 from .lookup import ListLookup, ChainLookup
 
-from .directives import sources, target, name, registry, implements
-from .grokkers import component, adapter
+from .directives import sources, target, name, registry, implements, order
+from .grokkers import component, adapter, subscription
 
 from .current import current
 setup = current.setup
@@ -22,7 +24,6 @@ monkey.safe()
 
 __all__ = ["Interface", "ComponentLookupError",
            "Registry", "ListLookup", "ChainLookup",
-           "sources", "target", "name", "registry", "implements",
-           "component", "adapter",
+           "sources", "target", "name", "registry", "implements", "order",
+           "component", "adapter", "subscription",
            "current", "setup", "teardown", "grok", "configure"]
-

@@ -1,5 +1,6 @@
 from zope.interface import Interface, Attribute
 
+
 class ILookup(Interface):
     def lookup(obs, target, name):
         """Look up a component in the registry.
@@ -31,9 +32,11 @@ class ILookup(Interface):
         the target interface (although no such checking is done).
         """
 
+
 class IChainLookup(ILookup):
     lookup = Attribute("The first ILookup to look in.")
     next = Attribute("The next ILookup in the chain.")
+
 
 class IRegistry(Interface):
     def register(sources, target, name, component):
@@ -55,6 +58,7 @@ class IRegistry(Interface):
         The component is a python object (function, class, instance) that is
         registered.
         """
+
 
 class ICurrent(Interface):
     """The current global registry and lookup.

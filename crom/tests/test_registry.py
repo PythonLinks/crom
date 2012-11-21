@@ -3,36 +3,45 @@ from crom.registry import Registry
 from crom import Interface, implements, ComponentLookupError
 from crom import monkey
 
+
 class IAlpha(Interface):
     pass
+
 
 @implements(IAlpha)
 class Alpha(object):
     pass
 
+
 class IBeta(Interface):
     pass
+
 
 @implements(IBeta)
 class Beta(object):
     pass
 
+
 class ITarget(Interface):
     pass
+
 
 def setup_function(method):
     monkey.incompat()
 
+
 def teardown_function(method):
     monkey.revert_incompat()
-    
+
+
 def test_component_no_source():
     reg = Registry()
     foo = object()
     reg.register((), ITarget, '', foo)
     assert reg.lookup([], ITarget, '') is foo
     assert ITarget.component(lookup=reg) is foo
-    
+
+
 def test_component_one_source():
     reg = Registry()
     foo = object()
@@ -41,7 +50,8 @@ def test_component_one_source():
     alpha = Alpha()
     assert reg.lookup([alpha], ITarget, '') is foo
     assert ITarget.component(alpha, lookup=reg) is foo
-    
+
+
 def test_component_two_sources():
     reg = Registry()
     foo = object()
@@ -51,7 +61,8 @@ def test_component_two_sources():
     beta = Beta()
     assert reg.lookup([alpha, beta], ITarget, '') is foo
     assert ITarget.component(alpha, beta, lookup=reg) is foo
-    
+
+
 def test_component_class_based_registration():
     reg = Registry()
     foo = object()
@@ -60,7 +71,8 @@ def test_component_class_based_registration():
     alpha = Alpha()
     assert reg.lookup([alpha], ITarget, '') is foo
     assert ITarget.component(alpha, lookup=reg) is foo
-    
+
+
 def test_component_inheritance():
     reg = Registry()
     foo = object()
@@ -77,7 +89,8 @@ def test_component_inheritance():
     
     assert reg.lookup([delta], ITarget, '') is foo
     assert ITarget.component(delta, lookup=reg) is foo
-    
+
+
 def test_component_not_found():
     reg = Registry()
     
@@ -87,6 +100,7 @@ def test_component_not_found():
     assert ITarget.component(alpha, lookup=reg, default=None) is None
     with py.test.raises(ComponentLookupError):
         ITarget.component(alpha, lookup=reg)
+
 
 def test_component_to_itself():
     reg = Registry()
@@ -98,7 +112,8 @@ def test_component_to_itself():
 
     assert reg.lookup([alpha], IAlpha, '') is foo
     assert IAlpha.component(alpha, lookup=reg) is foo
-    
+
+
 def test_adapter_no_source():
     reg = Registry()
 
@@ -111,7 +126,8 @@ def test_adapter_no_source():
     assert reg.adapt([], ITarget, '') is foo
     assert ITarget.adapt(lookup=reg) is foo
     assert ITarget(lookup=reg) is foo
-    
+
+
 def test_adapter_one_source():
     reg = Registry()
 
@@ -132,7 +148,8 @@ def test_adapter_one_source():
     adapted = ITarget.adapt(alpha, lookup=reg)
     assert isinstance(adapted, Adapted)
     assert adapted.context is alpha
-    
+
+
 def test_adapter_to_itself():
     reg = Registry()
 
@@ -154,7 +171,8 @@ def test_adapter_to_itself():
     assert reg.adapt([alpha], IAlpha, '') is alpha
     assert IAlpha(alpha, lookup=reg) is alpha
     assert IAlpha(alpha) is alpha
-    
+
+
 def test_adapter_two_sources():
     reg = Registry()
 
@@ -183,11 +201,13 @@ def test_adapter_two_sources():
     assert isinstance(adapted, Adapted)
     assert adapted.alpha is alpha
     assert adapted.beta is beta
-    
+
+
 def test_default():
     reg = Registry()
 
     assert ITarget.component(lookup=reg, default='blah') == 'blah'
+
 
 def test_name():
     reg = Registry()
@@ -196,7 +216,8 @@ def test_name():
     alpha = Alpha()
     assert ITarget.component(alpha, lookup=reg, name='x') is foo
     assert ITarget.component(alpha, lookup=reg, default=None) is None
-    
+
+
 def test_non_adapter_looked_up_as_adapter():
     reg = Registry()
     foo = object()
@@ -204,7 +225,8 @@ def test_non_adapter_looked_up_as_adapter():
     alpha = Alpha()
     with py.test.raises(TypeError):
         ITarget(alpha, lookup=reg)
-    
+
+
 def test_adapter_with_wrong_args():
     class Adapter(object):
         # takes no args
@@ -219,7 +241,8 @@ def test_adapter_with_wrong_args():
 
     assert str(e.value) == ("__init__() takes exactly 1 argument (2 given) "
                             "(<class 'crom.tests.test_registry.Adapter'>)")
-    
+
+
 def test_extra_kw():
     reg = Registry()
     foo = object()

@@ -3,6 +3,7 @@ from .current import current
 
 SENTINEL = object()
 
+
 def do_lookup(iface, lookup_func, component_name, *args, **kw):
     sources = args
     target = iface
@@ -21,16 +22,19 @@ def do_lookup(iface, lookup_func, component_name, *args, **kw):
         "Could not find %s from sources %s to target %s." %
         (component_name, sources, target))
 
+
 def find_lookup(kw):
     lookup = kw.pop('lookup', None)
     if lookup is None:
         lookup = current.lookup
     return lookup
 
+
 # iface will serve as 'self' when monkey-patched onto InterfaceClass
 def component_lookup(iface, *args, **kw):
     return do_lookup(
         iface, find_lookup(kw).lookup, 'component', *args, **kw)
+
 
 def adapter_lookup(iface, *args, **kw):
     # a shortcut rule to make sure self-adaption works even without
@@ -40,3 +44,8 @@ def adapter_lookup(iface, *args, **kw):
     return do_lookup(
         iface, find_lookup(kw).adapt, 'adapter', *args, **kw)
 
+
+def subscription_lookup(target, *sources):
+    lookup = current.lookup
+    for sub in lookup.subscriptions(sources, target):
+        yield sub(*sources)
