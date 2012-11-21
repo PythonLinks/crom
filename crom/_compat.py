@@ -2,7 +2,7 @@ import sys
 import types
 
 
-if sys.version_info[0] < 3:  #pragma NO COVER
+if sys.version_info[0] < 3:  # pragma NO COVER
     CLASS_TYPES = (type, types.ClassType)
-else:  #pragma NO COVER
+else:  # pragma NO COVER
     CLASS_TYPES = (type,)

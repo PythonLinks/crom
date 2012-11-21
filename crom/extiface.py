@@ -57,4 +57,3 @@ def subscription_lookup(target, *sources):
     lookup = implicit.lookup
     for sub in lookup.subscriptions(sources, target):
         yield sub(*sources)
-

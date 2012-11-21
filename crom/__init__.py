@@ -24,4 +24,4 @@ __all__ = ["Interface", "ComponentLookupError",
            "Registry", "ListLookup", "ChainLookup",
            "sources", "target", "name", "registry", "implements", "order",
            "component", "adapter", "subscription",
-           "current", "setup", "teardown", "grok", "configure"]
+           "implicit", "setup", "teardown", "grok", "configure"]
