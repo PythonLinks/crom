@@ -18,9 +18,4 @@ name = Directive(
 sources = ArgsDirective(
     'sources', 'crom', validator=class_or_interface_validator)
 
-
-# a factory that when called gives back the registry
-registry = Directive('registry', 'crom')
-
 implements = implementer
-

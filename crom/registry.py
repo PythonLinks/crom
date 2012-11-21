@@ -27,6 +27,7 @@ def interfaces(requirements):
 class Registry(object):
     """A base component registry.
     """
+
     def __init__(self):
         self.registry = AdapterRegistry()
 

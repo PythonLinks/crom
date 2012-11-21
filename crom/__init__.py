@@ -6,13 +6,11 @@ from zope.interface.interfaces import ComponentLookupError
 from .registry import Registry
 from .lookup import ListLookup, ChainLookup
 
-from .directives import sources, target, name, registry, implements, order
-from .grokkers import component, adapter, subscription
 
-from .current import current
-setup = current.setup
-teardown = current.teardown
+from .directives import sources, target, name, implements, order
+from .grokkers import component, adapter, subscription, registry
 
+from .implicit import implicit
 from .config import grok, configure
 
 # we do the absolutely compatible monkey patches , not breaking

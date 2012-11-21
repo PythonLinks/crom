@@ -82,11 +82,11 @@ def test_component_inheritance():
 
     class Delta(Gamma):
         pass
-    
+
     reg.register([Gamma], ITarget, '', foo)
 
     delta = Delta()
-    
+
     assert reg.lookup([delta], ITarget, '') is foo
     assert ITarget.component(delta, lookup=reg) is foo
 
@@ -107,7 +107,7 @@ def test_component_to_itself():
     alpha = Alpha()
 
     foo = object()
-    
+
     reg.register([IAlpha], IAlpha, '', foo)
 
     assert reg.lookup([alpha], IAlpha, '') is foo
@@ -120,7 +120,7 @@ def test_adapter_no_source():
     foo = object()
     def factory():
         return foo
-    
+
     reg.register((), ITarget, '', factory)
 
     assert reg.adapt([], ITarget, '') is foo
@@ -135,9 +135,9 @@ def test_adapter_one_source():
     class Adapted(object):
         def __init__(self, context):
             self.context = context
-    
+
     reg.register([IAlpha], ITarget, '', Adapted)
-    
+
     alpha = Alpha()
     adapted = reg.adapt([alpha], ITarget, '')
     assert isinstance(adapted, Adapted)
@@ -152,7 +152,6 @@ def test_adapter_one_source():
 
 def test_adapter_to_itself():
     reg = Registry()
-
     alpha = Alpha()
 
     @implements(IAlpha)
@@ -163,9 +162,10 @@ def test_adapter_to_itself():
     # behavior without any registration; we get the object back
     assert reg.adapt([alpha], IAlpha, '') is alpha
     assert IAlpha(alpha, lookup=reg) is alpha
+
     # it works even without registry
     assert IAlpha(alpha) is alpha
-    
+
     # behavior is the same with registration
     reg.register([IAlpha], IAlpha, '', Adapter)
     assert reg.adapt([alpha], IAlpha, '') is alpha
@@ -205,7 +205,6 @@ def test_adapter_two_sources():
 
 def test_default():
     reg = Registry()
-
     assert ITarget.component(lookup=reg, default='blah') == 'blah'
 
 
@@ -235,7 +234,7 @@ def test_adapter_with_wrong_args():
     reg = Registry()
     reg.register([Alpha], ITarget, '', Adapter)
     alpha = Alpha()
-    
+
     with py.test.raises(TypeError) as e:
         ITarget(alpha, lookup=reg)
 
@@ -246,10 +245,10 @@ def test_adapter_with_wrong_args():
 def test_extra_kw():
     reg = Registry()
     foo = object()
-    
+
     reg.register([Alpha], ITarget, '', foo)
     alpha = Alpha()
-    
+
     with py.test.raises(TypeError) as e:
         ITarget.component(alpha, lookup=reg, extra="illegal")
     assert str(e.value) == 'Illegal extra keyword arguments: extra'
