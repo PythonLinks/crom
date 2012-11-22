@@ -53,7 +53,7 @@ def adapter_lookup(iface, *args, **kw):
         iface, find_lookup(kw).adapt, 'adapter', *args, **kw)
 
 
-def subscription_lookup(target, *sources):
-    lookup = implicit.lookup
+def subscription_lookup(target, *sources, **kws):
+    lookup = find_lookup(kws)
     for sub in lookup.subscriptions(sources, target):
         yield sub(*sources)

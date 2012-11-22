@@ -3,10 +3,12 @@
 import venusian
 from zope.configuration.config import ConfigurationMachine
 
+base_ignores = ['.testing', '.tests', '.ftests']
 
-def grok(package, config):
+
+def grok(package, config, ignores=base_ignores):
     scanner = venusian.Scanner(config=config)
-    scanner.scan(package)
+    scanner.scan(package, ignore=ignores)
 
 
 def configure(package):

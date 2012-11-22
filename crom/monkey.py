@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from zope.interface.interface import InterfaceClass
-from .extiface import component_lookup, adapter_lookup
+from .extiface import component_lookup, adapter_lookup, subscription_lookup
 
 
 def safe():
     InterfaceClass.component = component_lookup
     InterfaceClass.adapt = adapter_lookup
+    InterfaceClass.subscription = subscription_lookup
 
 
 def incompat():
@@ -20,6 +21,7 @@ def incompat():
 def revert_safe():
     del InterfaceClass.component
     del InterfaceClass.adapt
+    del InterfaceClass.subscription
 
 
 def revert_incompat():
