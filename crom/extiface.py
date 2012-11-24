@@ -55,5 +55,9 @@ def adapter_lookup(iface, *args, **kw):
 
 def subscription_lookup(target, *sources, **kws):
     lookup = find_lookup(kws)
+    subscribe = kws.pop('subscribe', False)
     for sub in lookup.subscriptions(sources, target):
-        yield sub(*sources)
+        if subscribe:
+            yield sub(*sources)
+        else:
+            yield sub
