@@ -44,18 +44,13 @@ def component(scanner, pyname, obj, sources, target, registry, name=''):
 @directive(target)
 @directive(registry)
 def subscription(scanner, pyname, obj, sources, target, registry=None):
+
     def register():
-        if registry is None:
-            use_registry = current.registry
-        elif not IRegistry.providedBy(registry):
-            use_registry = registry()
-        else:
-            use_registry = registry
-        use_registry.subscribe(sources, target, obj)
+          use_registry.subscribe(sources, target, obj)
+
     scanner.config.action(
         discriminator=None,
-        callable=register
-        )
+        callable=register)
 
 
 adapter = component
