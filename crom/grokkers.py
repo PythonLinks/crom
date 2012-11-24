@@ -46,7 +46,7 @@ def component(scanner, pyname, obj, sources, target, registry, name=''):
 def subscription(scanner, pyname, obj, sources, target, registry=None):
 
     def register():
-          use_registry.subscribe(sources, target, obj)
+        registry.subscribe(sources, target, obj)
 
     scanner.config.action(
         discriminator=None,
