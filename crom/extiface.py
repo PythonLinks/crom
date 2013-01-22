@@ -38,6 +38,11 @@ def find_lookup(kw):
     return lookup
 
 
+def get_all_components(iface, *required):
+    lookup = find_lookup(kw)
+    return lookup.lookup_all(required, iface)
+
+
 def component_lookup(iface, *args, **kw):
     # iface will serve as 'self' when monkey-patched onto InterfaceClass
     return do_lookup(

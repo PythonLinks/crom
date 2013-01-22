@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from zope.interface.interface import InterfaceClass
-from .extiface import component_lookup, adapter_lookup, subscription_lookup
+from .extiface import (
+    component_lookup, adapter_lookup, subscription_lookup, get_all_components)
 
 
 def safe():
+    InterfaceClass.all_components = get_all_components
     InterfaceClass.component = component_lookup
     InterfaceClass.adapt = adapter_lookup
     InterfaceClass.subscription = subscription_lookup
