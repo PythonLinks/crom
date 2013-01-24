@@ -43,7 +43,7 @@ class Registry(object):
         return self.registry.lookup(map(providedBy, obs), target, name)
 
     def lookup_all(self, obs, target):
-        return iter(self.adapters.lookupAll(
+        return iter(self.registry.lookupAll(
             list(map(providedBy, obs)), target))
     
     def subscriptions(self, obs, target):
