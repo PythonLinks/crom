@@ -11,7 +11,7 @@ from .directives import implements
 
 
 @implements(ILookupsChain, ILookup)
-def ChainedLookup(oset):
+class ChainedLookup(oset):
     """
     """
     def add(self, lookup):
@@ -19,21 +19,21 @@ def ChainedLookup(oset):
         oset.add(self, lookup)
 
     def adapt(self, obs, target, name):
-        for lookup in self.lookups:
+        for lookup in self:
             result = lookup.adapt(obs, target, name)
             if result is not None:
                 return result
         return None
 
     def lookup(self, obs, target, name):
-        for lookup in self.lookups:
+        for lookup in reversed(self):
             result = lookup.lookup(obs, target, name)
             if result is not None:
                 return result
         return None
 
     def lookup_all(self, obs, target):
-        for lookup in self.lookups:
+        for lookup in reversed(self):
             results = list(lookup.lookupAll(
                 list(map(providedBy, obs)), target))
             if results is not None:
@@ -41,7 +41,7 @@ def ChainedLookup(oset):
         return None
 
     def subscriptions(self, obs, target):
-        for lookup in self.lookups:
+        for lookup in reversed(self):
             results = list(lookup.subscriptions(map(providedBy, obs), target))
             if results is not None:
                 return iter(results)
@@ -54,14 +54,16 @@ class LookupContext(object):
     def __init__(self, lookup):
         assert ILookup.providedBy(lookup), (
             u"A LookupContext lookup must be an ILookup object.")
-        self.node = node
+        self.lookup = lookup
+        self.previous = None
 
     def __enter__(self):
+        self.previous = implicit.lookup
         implicit.lookup = self.lookup
         return self.lookup
 
     def __exit__(self, type, value, traceback):
-        implicit.registry.reset_lookup()
+        implicit.lookup = self.previous
 
 
 class LookupChainLink(object):
@@ -76,8 +78,10 @@ class LookupChainLink(object):
         assert ILookupsChain.providedBy(implicit.lookup), (
             u"LookupChainLink can only be called if the current"
             u" implicit is an ILookupsChain lookup.")
-        implicit.lookup = self.link
-        return self.link
+        if self.link in implicit.lookup:
+            raise KeyError("Registry %s already exists in the chain.")
+        implicit.lookup.add(self.link)
+        return implicit.lookup
 
     def __exit__(self, type, value, traceback):
-        implicit.registry.reset_lookup()
+        implicit.lookup.remove(self.link)

@@ -4,7 +4,7 @@ from zope.interface import Interface
 from zope.interface.interfaces import ComponentLookupError
 
 from .registry import Registry
-from .lookup import ChainedLookup
+from .lookup import ChainedLookup, LookupContext, LookupChainLink
 from .interfaces import IRegistry, ILookup, ILookupsChain
 
 from .directives import sources, target, name, implements, order
