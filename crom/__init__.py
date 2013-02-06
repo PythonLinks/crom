@@ -5,7 +5,7 @@ from zope.interface.interfaces import ComponentLookupError
 
 from .registry import Registry
 from .lookup import ChainedLookup
-from .interfaces import Iregistry, ILookup, ILookupsChain
+from .interfaces import IRegistry, ILookup, ILookupsChain
 
 from .directives import sources, target, name, implements, order
 from .grokkers import component, adapter, subscription, registry

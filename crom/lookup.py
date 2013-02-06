@@ -15,7 +15,7 @@ def ChainedLookup(oset):
     """
     """
     def add(self, lookup):
-        assert ILookup.providedBy(lookup):
+        assert ILookup.providedBy(lookup)
         oset.add(self, lookup)
 
     def adapt(self, obs, target, name):
@@ -76,7 +76,7 @@ class LookupChainLink(object):
         assert ILookupsChain.providedBy(implicit.lookup), (
             u"LookupChainLink can only be called if the current"
             u" implicit is an ILookupsChain lookup.")
-        implicit. = self.link
+        implicit.lookup = self.link
         return self.link
 
     def __exit__(self, type, value, traceback):
