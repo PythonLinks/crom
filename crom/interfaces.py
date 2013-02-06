@@ -3,6 +3,10 @@ from zope.interface import Interface, Attribute
 
 class ILookup(Interface):
 
+    def lookup_all(obs, target):
+        """FIXME
+        """
+
     def lookup(obs, target, name):
         """Look up a component in the registry.
 
@@ -33,10 +37,16 @@ class ILookup(Interface):
         the target interface (although no such checking is done).
         """
 
+    def subscriptions(obs, target):
+        """FIXME
+        """
+        
 
-class IChainLookup(ILookup):
-    lookup = Attribute("The first ILookup to look in.")
-    next = Attribute("The next ILookup in the chain.")
+class ILookupsChain(Interface):
+
+    def __iter__():
+        """returns an iterable of ILookup objects.
+        """
 
 
 class IRegistry(Interface):

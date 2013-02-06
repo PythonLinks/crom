@@ -4,20 +4,26 @@ The basic ILookup is implemented by crom.Registry (in registry.py).
 This module contains alternative Lookups that can be used to combine
 lookups together.
 """
-from .interfaces import ILookup, IChainLookup
+from oset import oset
+from .implicit import implicit
+from .interfaces import ILookup, ILookupsChain
 from .directives import implements
 
 
-@implements(ILookup)
-def ListLookup(object):
-    """A simple list of lookups functioning as an ILookup.
-
-    Go through all items in the list, starting at the beginning and
-    try to find the component. If found in a lookup, return it right away.
+@implements(ILookupsChain, ILookup)
+def ChainedLookup(oset):
     """
+    """
+    def add(self, lookup):
+        assert ILookup.providedBy(lookup):
+        oset.add(self, lookup)
 
-    def __init__(self, lookups):
-        self.lookups = lookups
+    def adapt(self, obs, target, name):
+        for lookup in self.lookups:
+            result = lookup.adapt(obs, target, name)
+            if result is not None:
+                return result
+        return None
 
     def lookup(self, obs, target, name):
         for lookup in self.lookups:
@@ -26,34 +32,52 @@ def ListLookup(object):
                 return result
         return None
 
-    def adapt(self, obs, target, name):
+    def lookup_all(self, obs, target):
         for lookup in self.lookups:
-            result = self.lookup.adapt(obs, target, name)
-            if result is not None:
-                return result
+            results = list(lookup.lookupAll(
+                list(map(providedBy, obs)), target))
+            if results is not None:
+                return iter(results)
+        return None
+
+    def subscriptions(self, obs, target):
+        for lookup in self.lookups:
+            results = list(lookup.subscriptions(map(providedBy, obs), target))
+            if results is not None:
+                return iter(results)
         return None
 
 
-@implements(IChainLookup)
-class ChainLookup(object):
-    """Chain a lookup on top of another lookup.
-
-    Look in the supplied ILookup object first, and if not found, look
-    in the next ILookup object. This can be used to chain lookups together.
+class LookupContext(object):
+    """A context manager to work in a given lookup.
     """
+    def __init__(self, lookup):
+        assert ILookup.providedBy(lookup), (
+            u"A LookupContext lookup must be an ILookup object.")
+        self.node = node
 
-    def __init__(self, lookup, next):
-        self.lookup = lookup
-        self.next = next
+    def __enter__(self):
+        implicit.lookup = self.lookup
+        return self.lookup
 
-    def lookup(self, obs, target, name):
-        result = self.lookup.lookup(obs, target, name)
-        if result is not None:
-            return result
-        return self.next.lookup(obs, target, name)
+    def __exit__(self, type, value, traceback):
+        implicit.registry.reset_lookup()
 
-    def adapt(self, obs, target, name):
-        result = self.lookup.adapt(obs, target, name)
-        if result is not None:
-            return result
-        return self.next.adapt(obs, target, name)
+
+class LookupChainLink(object):
+    """A context manager to work in a given looku, added to a lookups' chain.
+    """
+    def __init__(self, link):
+        assert ILookup.providedBy(link), (
+            u"A LookupChainLink link must be an ILookup object.")
+        self.link = link
+
+    def __enter__(self):
+        assert ILookupsChain.providedBy(implicit.lookup), (
+            u"LookupChainLink can only be called if the current"
+            u" implicit is an ILookupsChain lookup.")
+        implicit. = self.link
+        return self.link
+
+    def __exit__(self, type, value, traceback):
+        implicit.registry.reset_lookup()
