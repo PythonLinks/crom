@@ -8,7 +8,8 @@ from .lookup import ChainedLookup, LookupContext, LookupChainLink
 from .interfaces import IRegistry, ILookup, ILookupsChain
 
 from .directives import sources, target, name, implements, order
-from .grokkers import component, adapter, subscription, registry
+from .grokkers import (
+    component, component_factory, adapter, subscription, registry)
 
 from .implicit import implicit
 from .config import grok, configure

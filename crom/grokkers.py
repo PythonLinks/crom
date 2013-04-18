@@ -42,6 +42,26 @@ def component(scanner, pyname, obj, sources, target, registry, name=''):
 @grokker
 @directive(sources)
 @directive(target)
+@directive(name)
+@directive(registry)
+def component_factory(
+    scanner, pyname, factory, sources, target, registry, name=''):
+
+    def register():
+        obj = factory()
+        assert callable(obj), (
+            "%r is declared as a component_factory but "
+            "its instances are not callable") % factory
+        registry.register(sources, target, name, obj)
+
+    scanner.config.action(
+        discriminator=('component', sources, target, name, registry),
+        callable=register)
+
+
+@grokker
+@directive(sources)
+@directive(target)
 @directive(registry)
 def subscription(scanner, pyname, obj, sources, target, registry=None):
 
@@ -54,3 +74,4 @@ def subscription(scanner, pyname, obj, sources, target, registry=None):
 
 
 adapter = component
+adapter_factory = component_factory

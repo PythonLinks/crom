@@ -33,6 +33,24 @@ def test_component():
     assert adapted.context is source
 
 
+def test_component_factory():
+    from .fixtures import component as module
+
+    # grok the component module
+    crom.configure(module)
+
+    # we should now be able to get component
+    component = module.ITarget.component()
+    assert module.ITarget.providedBy(component)
+    # it's always the same
+    assert component is module.ITarget.component()
+
+    assert isinstance(component, module.ComponentFactory)
+
+    # yet we can adapt on it (in this case calling return self)
+    assert component is module.ITarget()
+
+
 def test_subscriptions():
     from .fixtures import subscriptions as module
 
