@@ -39,10 +39,17 @@ def test_subscriptions():
     # grok the component module
     crom.configure(module)
 
-    # we should now be able to get simple subscriptions
     source1 = module.One()
+
+    # we can list them without instanciating 
     subs = list(extiface.subscription_lookup(
         module.ISomeSubscription, source1))
+
+    assert subs == [module.Subscription]
+
+    # and we should now be able to get simple subscriptions
+    subs = list(extiface.subscription_lookup(
+        module.ISomeSubscription, source1, subscribe=True))
 
     assert len(subs) == 1
     assert isinstance(subs[0], module.Subscription)
@@ -52,7 +59,7 @@ def test_subscriptions():
     source3 = module.Three()
 
     subs = list(extiface.subscription_lookup(
-        module.ISomeSubscription, source2, source3))
+        module.ISomeSubscription, source2, source3, subscribe=True))
 
     assert len(subs) == 2
     assert isinstance(subs[0], module.MultiSubscription1)
