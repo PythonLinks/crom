@@ -11,7 +11,8 @@ def grok(package, config, ignores=base_ignores):
     scanner.scan(package, ignore=ignores)
 
 
-def configure(package):
+def configure(*packages):
     config = ConfigurationMachine()
-    grok(package, config)
+    for package in packages:
+        grok(package, config)
     config.execute_actions()
