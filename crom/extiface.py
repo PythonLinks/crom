@@ -3,6 +3,7 @@
 from zope.interface.interfaces import ComponentLookupError
 from .implicit import implicit
 from .interfaces import NoImplicitLookupError
+from .utils import sort_components
 
 
 SENTINEL = object()
@@ -61,8 +62,10 @@ def adapter_lookup(iface, *args, **kw):
 def subscription_lookup(target, *sources, **kws):
     lookup = find_lookup(kws)
     subscribe = kws.pop('subscribe', False)
-    for sub in lookup.subscriptions(sources, target):
-        if subscribe:
-            yield sub(*sources)
-        else:
-            yield sub
+    ordered = kws.pop('ordered', False)
+    subscriptions = lookup.subscriptions(sources, target)
+    if ordered:
+        subscriptions = sort_components(subscriptions)
+    if subscriptions and subscribe:
+        return [sub(*sources) for sub in subscriptions]
+    return subscriptions
