@@ -58,5 +58,5 @@ class Registry(object):
             return None
         try:
             return adapter(*obs)
-        except TypeError, e:
+        except TypeError as e:
             raise TypeError(str(e) + " (%s)" % adapter)
