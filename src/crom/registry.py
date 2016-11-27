@@ -27,7 +27,6 @@ def interfaces(requirements):
 class Registry(object):
     """A base component registry.
     """
-
     def __init__(self):
         self.registry = AdapterRegistry()
 
@@ -42,6 +41,9 @@ class Registry(object):
     def lookup(self, obs, target, name):
         return self.registry.lookup(map(providedBy, obs), target, name)
 
+    def cls_lookup(self, classes, target, name):
+        return self.registry.lookup(map(implementedBy, classes), target, name)
+    
     def lookup_all(self, obs, target):
         return iter(self.registry.lookupAll(
             list(map(providedBy, obs)), target))
@@ -49,6 +51,9 @@ class Registry(object):
     def subscriptions(self, obs, target):
         return self.registry.subscriptions(map(providedBy, obs), target)
 
+    def predicates(self, classes, target):
+        return self.registry.subscriptions(map(implementedBy, classes), target)
+    
     def adapt(self, obs, target, name):
         # self-adaptation
         if len(obs) == 1 and target.providedBy(obs[0]):

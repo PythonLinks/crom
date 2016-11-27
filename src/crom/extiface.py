@@ -69,3 +69,12 @@ def subscription_lookup(target, *sources, **kws):
     if subscriptions and subscribe:
         return [sub(*sources) for sub in subscriptions]
     return subscriptions
+
+
+def predicates_lookup(target, *sources, **kws):
+    lookup = find_lookup(kws)
+    ordered = kws.pop('ordered', False)
+    predicates = lookup.predicates(sources, target)
+    if ordered:
+        predicates = sort_components(predicates)
+    return predicates

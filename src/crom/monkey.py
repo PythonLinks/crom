@@ -2,7 +2,8 @@
 
 from zope.interface.interface import InterfaceClass
 from .extiface import (
-    component_lookup, adapter_lookup, subscription_lookup, get_all_components)
+    component_lookup, adapter_lookup, subscription_lookup,
+    predicates_lookup, get_all_components)
 
 
 def safe():
@@ -10,6 +11,7 @@ def safe():
     InterfaceClass.component = component_lookup
     InterfaceClass.adapt = adapter_lookup
     InterfaceClass.subscription = subscription_lookup
+    InterfaceClass.predicates = predicates_lookup
 
 
 def incompat():
