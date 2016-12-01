@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='crom',
-      version = '0.1dev',
+      version = '0.1.dev1',
       description="Components.",
       author="Martijn Faassen",
       author_email="faassen@startifact.com",
