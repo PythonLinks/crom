@@ -1,4 +1,6 @@
-import py.test
+# -*- coding: utf-8 -*-
+
+import pytest
 from crom.registry import Registry
 from crom import Interface, implements, ComponentLookupError
 from crom import monkey
@@ -98,7 +100,7 @@ def test_component_not_found():
     alpha = Alpha()
     assert reg.lookup([alpha], ITarget, '') is None
     assert ITarget.component(alpha, lookup=reg, default=None) is None
-    with py.test.raises(ComponentLookupError):
+    with pytest.raises(ComponentLookupError):
         ITarget.component(alpha, lookup=reg)
 
 
@@ -222,7 +224,7 @@ def test_non_adapter_looked_up_as_adapter():
     foo = object()
     reg.register([Alpha], ITarget, '', foo)
     alpha = Alpha()
-    with py.test.raises(TypeError):
+    with pytest.raises(TypeError):
         ITarget(alpha, lookup=reg)
 
 
@@ -235,11 +237,8 @@ def test_adapter_with_wrong_args():
     reg.register([Alpha], ITarget, '', Adapter)
     alpha = Alpha()
 
-    with py.test.raises(TypeError) as e:
+    with pytest.raises(TypeError) as e:
         ITarget(alpha, lookup=reg)
-
-    assert str(e.value) == ("__init__() takes exactly 1 argument (2 given) "
-                            "(<class 'crom.tests.test_registry.Adapter'>)")
 
 
 def test_extra_kw():
@@ -249,6 +248,6 @@ def test_extra_kw():
     reg.register([Alpha], ITarget, '', foo)
     alpha = Alpha()
 
-    with py.test.raises(TypeError) as e:
+    with pytest.raises(TypeError) as e:
         ITarget.component(alpha, lookup=reg, extra="illegal")
     assert str(e.value) == 'Illegal extra keyword arguments: extra'
