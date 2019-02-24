@@ -23,15 +23,25 @@ def interfaces(requirements):
     return ifaces
 
 
+
 @implements(IRegistry, ILookup)
 class Registry(object):
     """A base component registry.
     """
     def __init__(self):
         self.registry = AdapterRegistry()
-
+        self.calls = []
+        
+    def loadCalls(self,calls):
+        for item in calls:
+           self.registry.register(item[0],
+                                  item[1],
+                                  item[2],
+                                  item[3])
+        
     def register(self, sources, target, name, component):
         required = interfaces(sources)
+        self.calls.append ((required,target,name,component))
         self.registry.register(required, target, name, component)
 
     def subscribe(self, sources, target, component):
