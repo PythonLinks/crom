@@ -30,22 +30,28 @@ class Registry(object):
     """
     def __init__(self):
         self.registry = AdapterRegistry()
-        self.calls = []
+        self.calls = ([],[])
         
     def loadCalls(self,calls):
-        for item in calls:
+        for item in calls[0]:
            self.registry.register(item[0],
                                   item[1],
                                   item[2],
                                   item[3])
+
+        for item in calls[1]:
+           self.registry.register(item[0],
+                                  item[1],
+                                  item[2])           
         
     def register(self, sources, target, name, component):
         required = interfaces(sources)
-        self.calls.append ((required,target,name,component))
+        self.calls[0].append ((required,target,name,component))
         self.registry.register(required, target, name, component)
 
     def subscribe(self, sources, target, component):
         required = interfaces(sources)
+        self.calls[1].append ((required,target,component))        
         self.registry.subscribe(required, target, component)
 
     def lookup(self, obs, target, name):
