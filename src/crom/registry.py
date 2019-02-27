@@ -40,7 +40,7 @@ class Registry(object):
                                   item[3])
 
         for item in calls[1]:
-           self.registry.register(item[0],
+           self.registry.subscribe(item[0],
                                   item[1],
                                   item[2])           
         
