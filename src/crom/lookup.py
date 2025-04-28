@@ -16,7 +16,7 @@ class ChainedLookup(OrderedSet):
     """
     def add(self, lookup):
         assert ILookup.providedBy(lookup)
-        oset.add(self, lookup)
+        OrderedSet.add(self, lookup)
 
     def adapt(self, obs, target, name):
         for lookup in self:
