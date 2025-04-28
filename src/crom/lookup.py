@@ -4,14 +4,14 @@ The basic ILookup is implemented by crom.Registry (in registry.py).
 This module contains alternative Lookups that can be used to combine
 lookups together.
 """
-from oset import oset
+from ordered_set import OrderedSet 
 from .implicit import implicit
 from .interfaces import ILookup, ILookupsChain
 from .directives import implements
 
 
 @implements(ILookupsChain, ILookup)
-class ChainedLookup(oset):
+class ChainedLookup(OrderedSet):
     """
     """
     def add(self, lookup):
