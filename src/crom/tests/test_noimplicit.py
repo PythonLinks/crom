@@ -1,5 +1,5 @@
 import threading
-import py.test
+import pytest
 
 from crom import implicit, monkey
 import crom
@@ -40,7 +40,7 @@ def test_no_implicit_initialization():
 def test_no_implicit_grokking():
     from .fixtures import component as module
     # grok the component module
-    with py.test.raises(NoImplicitRegistryError):
+    with pytest.raises(NoImplicitRegistryError):
         crom.configure(module)
 
 
@@ -52,5 +52,5 @@ def test_no_implicit_lookup():
     source = module.Source()
 
     # we try to adapt without an explicit lookup, this will fail
-    with py.test.raises(NoImplicitLookupError):
+    with pytest.raises(NoImplicitLookupError):
         module.ITarget(source)
